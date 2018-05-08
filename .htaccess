@@ -1,0 +1,11 @@
+
+RewriteEngine On
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-f
+RewriteRule ^image/(.*)/?$ index.php?image=$1
+RewriteRule ^i/(.*)/?$ index.php?image=$1
+RewriteRule ^i/embed/(.*)/?$ index.php?image=$1&embed=true
+RewriteRule ^image/embed/(.*)/?$ index.php?image=$1&embed=true
+RewriteRule ^upload/?$ index.php
+RewriteRule ^api/?$ api.php
+
