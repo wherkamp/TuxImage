@@ -24,10 +24,10 @@ if ($_SESSION['applicationID'] == $config->apiKey) {
 
             if (empty($errors) == true) {
                 $id = genRandomCode(6);
-                $filePath = "images/" . $id . "." . str_replace("images/", "", $file_type);
+                $filePath = "images/" . $id . "." . str_replace("image/", "", $file_type);
                 $prepared = mysqli_prepare($conn, "INSERT INTO `images` (`name`,`identifykey`,`file-path`,`description`,`time`,`public`,`type`) VALUES (?,?,?,?,?,?,?);");
                 echo mysqli_error($conn);
-                $prepared->bind_param('sssssss' . $name, $idM, $path, $description, $time, $public, $type);
+                $prepared->bind_param('sssssss', $name, $idM, $path, $description, $time, $public, $type);
                 $name = $_POST['name'];
                 $idM = $id;
                 $path = $filePath;

@@ -9,23 +9,17 @@ include 'common.php';
 session_start();
 $_SESSION['applicationID'] = $config->apiKey;
 
-
-if (isset($_GET['image'])) {
-    if (isset($_GET['embed'])) {
+if (isset($_GET['type'])) {
+    if ($_GET['type'] == "i" || $_GET['type'] == "image") {
         $prepared = mysqli_prepare($conn, "SELECT * FROM `images` WHERE identifykey=? LIMIT 1");
-        $prepared->bind_param('i', $id);
-        $id = $_GET['countdown'];
+        $prepared->bind_param('s', $id);
+        $id = $_GET['image'];
         $prepared->execute();
         $result = $prepared->get_result();
         if ($result != null) {
             if (mysqli_num_rows($result) >= 1) {
                 while ($row = mysqli_fetch_assoc($result)) {
-                    header("Content-type: " . row['type']);
-                    $filename = ROOT . "/" . $row['file-path'];
-                    $handle = fopen($filename, "rb");
-                    $contents = fread($handle, filesize($filename));
-                    fclose($handle);
-                    echo $contents;
+                    echo '<img src="' . ROOT . "/" . $row['file-path'] . '">';
                 }
             } else {
                 include '404.php';
@@ -33,25 +27,27 @@ if (isset($_GET['image'])) {
         } else {
             include '404.php';
         }
-    } else {
-        $prepared = mysqli_prepare($conn, "SELECT * FROM `images` WHERE identifykey=? LIMIT 1");
+    } else if ($_GET['type'] == "embed") {
+        $prepared = mysqli_prepare($conn, "SELECT * FROM `images` WHERE identifykey=? LIMIT 1;");
         $prepared->bind_param('s', $id);
         $id = $_GET['image'];
         $prepared->execute();
         $result = $prepared->get_result();
-        var_dump($result);
         if ($result != null) {
             if (mysqli_num_rows($result) >= 1) {
                 while ($row = mysqli_fetch_assoc($result)) {
-                    echo '<img src"' . ROOT . "/" . $row['file-path'] . ">";
+                    header("Content-type: " . $row['type']);
+                    $filename = ROOT . "/" . $row['file-path'];
+                    readfile($filename);
                 }
-            } else {``
-                include '404.php';
             }
         } else {
             include '404.php';
         }
+    } else {
+        include '404.php';
     }
+
 } else {
     $page = file_get_contents(ROOT . "/public/upload.html");
     $error = "";
